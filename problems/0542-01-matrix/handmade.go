@@ -1,0 +1,45 @@
+package matrix01
+
+const debugUpdateMatrix = false
+
+var directions = [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+
+// updateMatrix returns for each cell the distance to the nearest zero via multi-source BFS.
+func updateMatrix(mat [][]int) [][]int {
+	m, n := len(mat), len(mat[0])
+	dist := make([][]int, m)
+	queue := make([][2]int, 0, m*n)
+
+	const inf = int(^uint(0) >> 1)
+
+	for i := 0; i < m; i++ {
+		dist[i] = make([]int, n)
+		for j := 0; j < n; j++ {
+			if mat[i][j] == 0 {
+				queue = append(queue, [2]int{i, j})
+			} else {
+				dist[i][j] = inf
+			}
+		}
+	}
+
+	head := 0
+	for head < len(queue) {
+		cell := queue[head]
+		head++
+		r, c := cell[0], cell[1]
+
+		for _, d := range directions {
+			nr, nc := r+d[0], c+d[1]
+			if nr < 0 || nr >= m || nc < 0 || nc >= n {
+				continue
+			}
+			if dist[nr][nc] > dist[r][c]+1 {
+				dist[nr][nc] = dist[r][c] + 1
+				queue = append(queue, [2]int{nr, nc})
+			}
+		}
+	}
+
+	return dist
+}

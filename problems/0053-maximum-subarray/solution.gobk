@@ -1,0 +1,39 @@
+package maximumsubarray
+
+import "fmt"
+
+const debugMaxSubArray = false
+
+// maxSubArray finds the contiguous range with the largest sum using Kadane's scan.
+func maxSubArray(nums []int) int {
+	best := nums[0]
+	current := nums[0]
+
+	if debugMaxSubArray {
+		fmt.Printf("start best=%d current=%d\n", best, current)
+	}
+
+	for i := 1; i < len(nums); i++ {
+		num := nums[i]
+		if current+num < num {
+			current = num
+		} else {
+			current += num
+		}
+
+		if current > best {
+			best = current
+			if debugMaxSubArray {
+				fmt.Printf("new best=%d at i=%d\n", best, i)
+			}
+		} else if debugMaxSubArray {
+			fmt.Printf("progress i=%d num=%d current=%d best=%d\n", i, num, current, best)
+		}
+	}
+
+	if debugMaxSubArray {
+		fmt.Printf("maxSubArray result=%d\n", best)
+	}
+
+	return best
+}

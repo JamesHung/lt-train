@@ -1,0 +1,33 @@
+package containsduplicate
+
+import "fmt"
+
+const debugContainsDuplicate = false
+
+// containsDuplicate returns true if any value appears at least twice in nums.
+func containsDuplicate(nums []int) bool {
+	if debugContainsDuplicate {
+		fmt.Printf("input nums=%v\n", nums)
+	}
+
+	seen := make(map[int]struct{}, len(nums))
+	for i, num := range nums {
+		if _, ok := seen[num]; ok {
+			if debugContainsDuplicate {
+				fmt.Printf("found duplicate num=%d at index=%d\n", num, i)
+			}
+			return true
+		}
+
+		seen[num] = struct{}{}
+		if debugContainsDuplicate {
+			fmt.Printf("recorded num=%d at index=%d\n", num, i)
+		}
+	}
+
+	if debugContainsDuplicate {
+		fmt.Println("all elements distinct")
+	}
+
+	return false
+}
