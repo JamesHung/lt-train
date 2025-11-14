@@ -1,0 +1,44 @@
+package diameterofbinarytree
+
+import "fmt"
+
+const debugDiameterOfBinaryTree = false
+
+// TreeNode defines a binary tree node.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+// diameterOfBinaryTree returns the length of the longest path (in edges) between two nodes.
+func diameterOfBinaryTree(root *TreeNode) int {
+	maxDiameter := 0
+
+	var height func(node *TreeNode) int
+	height = func(node *TreeNode) int {
+		if node == nil {
+			return 0
+		}
+
+		leftH := height(node.Left)
+		rightH := height(node.Right)
+
+		if debugDiameterOfBinaryTree {
+			fmt.Printf("node=%d leftH=%d rightH=%d\n", node.Val, leftH, rightH)
+		}
+
+		// path through node uses left + right edges
+		if leftH+rightH > maxDiameter {
+			maxDiameter = leftH + rightH
+		}
+
+		if leftH > rightH {
+			return leftH + 1
+		}
+		return rightH + 1
+	}
+
+	height(root)
+	return maxDiameter
+}

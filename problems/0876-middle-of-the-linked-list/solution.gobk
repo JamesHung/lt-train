@@ -1,0 +1,26 @@
+package middleofthelinkedlist
+
+import "fmt"
+
+const debugMiddleNode = false
+
+// ListNode defines a singly linked list node.
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+// middleNode returns the middle node, preferring the second middle when length is even.
+func middleNode(head *ListNode) *ListNode {
+	slow, fast := head, head
+
+	for fast != nil && fast.Next != nil {
+		if debugMiddleNode {
+			fmt.Printf("slow=%d fast=%d\n", slow.Val, fast.Val)
+		}
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+
+	return slow
+}

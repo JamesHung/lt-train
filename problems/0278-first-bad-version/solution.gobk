@@ -1,0 +1,29 @@
+package firstbadversion
+
+import "fmt"
+
+const debugFirstBadVersion = false
+
+// isBadVersion simulates the LeetCode-provided API and is set in tests.
+var isBadVersion func(version int) bool
+
+// firstBadVersion finds the earliest bad release using binary search.
+func firstBadVersion(n int) int {
+	lo, hi := 1, n
+
+	for lo < hi {
+		mid := lo + (hi-lo)/2
+
+		if debugFirstBadVersion {
+			fmt.Printf("lo=%d hi=%d mid=%d\n", lo, hi, mid)
+		}
+
+		if isBadVersion(mid) {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+
+	return lo
+}

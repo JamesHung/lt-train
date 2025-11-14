@@ -1,0 +1,45 @@
+package validparentheses
+
+import "fmt"
+
+const debugValidParentheses = false
+
+// isValid returns true when s is a well-formed parentheses string.
+func isValid(s string) bool {
+	if debugValidParentheses {
+		fmt.Printf("isValid input=%q\n", s)
+	}
+
+	stack := make([]rune, 0, len(s))
+	matching := map[rune]rune{
+		')': '(',
+		']': '[',
+		'}': '{',
+	}
+
+	for idx, ch := range s {
+		switch ch {
+		case '(', '[', '{':
+			stack = append(stack, ch)
+			if debugValidParentheses {
+				fmt.Printf("push idx=%d ch=%c stack=%q\n", idx, ch, string(stack))
+			}
+		default:
+			if len(stack) == 0 || stack[len(stack)-1] != matching[ch] {
+				if debugValidParentheses {
+					fmt.Printf("mismatch idx=%d ch=%c stack=%q\n", idx, ch, string(stack))
+				}
+				return false
+			}
+			stack = stack[:len(stack)-1]
+			if debugValidParentheses {
+				fmt.Printf("pop idx=%d ch=%c stack=%q\n", idx, ch, string(stack))
+			}
+		}
+	}
+
+	if debugValidParentheses {
+		fmt.Printf("isValid result %t stack=%q\n", len(stack) == 0, string(stack))
+	}
+	return len(stack) == 0
+}

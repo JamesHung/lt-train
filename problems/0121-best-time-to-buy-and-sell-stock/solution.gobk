@@ -1,0 +1,36 @@
+package besttimetobuyandsellstock
+
+import (
+	"fmt"
+	"math"
+)
+
+const debugMaxProfit = false
+
+// maxProfit returns the maximum profit achievable by buying once and selling later.
+func maxProfit(prices []int) int {
+	minPrice := math.MaxInt
+	best := 0
+
+	for day, price := range prices {
+		if price < minPrice {
+			if debugMaxProfit {
+				fmt.Printf("update min day=%d price=%d\n", day, price)
+			}
+			minPrice = price
+			continue
+		}
+
+		if profit := price - minPrice; profit > best {
+			if debugMaxProfit {
+				fmt.Printf("new profit day=%d buy=%d sell=%d profit=%d\n", day, minPrice, price, profit)
+			}
+			best = profit
+		}
+	}
+
+	if debugMaxProfit {
+		fmt.Printf("maxProfit result=%d\n", best)
+	}
+	return best
+}

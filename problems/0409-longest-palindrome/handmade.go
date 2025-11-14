@@ -1,0 +1,30 @@
+package longestpalindrome
+
+const debugLongestPalindrome = false
+
+// longestPalindrome returns the length of the longest palindrome constructible from letters of s.
+func longestPalindrome(s string) int {
+	if len(s) <= 1 {
+		return len(s)
+	}
+
+	freq := make(map[rune]int, len(s))
+	for _, ch := range s {
+		freq[ch]++
+	}
+
+	length := 0
+	hasOdd := false
+	for _, count := range freq {
+		length += (count / 2) * 2
+		if count%2 == 1 {
+			hasOdd = true
+		}
+	}
+
+	if hasOdd {
+		length++
+	}
+
+	return length
+}

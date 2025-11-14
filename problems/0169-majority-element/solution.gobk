@@ -1,0 +1,28 @@
+package majorityelement
+
+import "fmt"
+
+const debugMajorityElement = false
+
+// majorityElement returns the element appearing more than n/2 times using Boyer-Moore voting.
+func majorityElement(nums []int) int {
+	candidate := 0
+	count := 0
+
+	for _, num := range nums {
+		if count == 0 {
+			candidate = num
+		}
+		if num == candidate {
+			count++
+		} else {
+			count--
+		}
+
+		if debugMajorityElement {
+			fmt.Printf("num=%d candidate=%d count=%d\n", num, candidate, count)
+		}
+	}
+
+	return candidate
+}

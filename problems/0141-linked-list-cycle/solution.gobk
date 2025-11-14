@@ -1,0 +1,31 @@
+package linkedlistcycle
+
+import "fmt"
+
+// ListNode defines a singly-linked list node.
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+const debugLinkedListCycle = false
+
+// hasCycle detects a cycle using Floyd's tortoise and hare algorithm.
+func hasCycle(head *ListNode) bool {
+	slow, fast := head, head
+
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+
+		if debugLinkedListCycle {
+			fmt.Printf("slow=%p fast=%p\n", slow, fast)
+		}
+
+		if slow == fast {
+			return true
+		}
+	}
+
+	return false
+}

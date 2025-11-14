@@ -1,0 +1,49 @@
+package reverselinkedlist
+
+import "fmt"
+
+const debugReverseLinkedList = false
+
+// ListNode defines a singly linked list node.
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+// reverseList reverses a list iteratively and returns the new head.
+func reverseList(head *ListNode) *ListNode {
+	var prev *ListNode
+	curr := head
+
+	for curr != nil {
+		next := curr.Next
+		curr.Next = prev
+		if debugReverseLinkedList {
+			fmt.Printf("Reversing node %d -> next set to %v\n", curr.Val, nodeVal(prev))
+		}
+		prev = curr
+		curr = next
+	}
+
+	return prev
+}
+
+// reverseListRecursive reverses a list recursively (follow-up).
+func reverseListRecursive(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {
+		return head
+	}
+
+	newHead := reverseListRecursive(head.Next)
+	head.Next.Next = head
+	head.Next = nil
+
+	return newHead
+}
+
+func nodeVal(node *ListNode) interface{} {
+	if node == nil {
+		return nil
+	}
+	return node.Val
+}

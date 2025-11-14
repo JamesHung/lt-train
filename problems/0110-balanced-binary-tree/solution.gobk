@@ -1,0 +1,42 @@
+package balancedbinarytree
+
+import "fmt"
+
+// TreeNode represents a binary tree node.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+const debugBalancedTree = false
+
+// isBalanced returns true if every node's left/right subtrees differ in height by at most 1.
+func isBalanced(root *TreeNode) bool {
+	balanced := true
+
+	var height func(*TreeNode) int
+	height = func(node *TreeNode) int {
+		if node == nil || !balanced {
+			return 0
+		}
+
+		left := height(node.Left)
+		right := height(node.Right)
+
+		if diff := left - right; diff > 1 || diff < -1 {
+			balanced = false
+			if debugBalancedTree {
+				fmt.Printf("imbalanced at %d: left=%d right=%d\n", node.Val, left, right)
+			}
+		}
+
+		if left > right {
+			return left + 1
+		}
+		return right + 1
+	}
+
+	height(root)
+	return balanced
+}

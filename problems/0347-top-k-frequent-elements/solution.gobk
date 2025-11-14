@@ -1,0 +1,41 @@
+package topkfrequentelements
+
+import "fmt"
+
+const debugTopK = false
+
+// topKFrequent returns the k most frequent elements in nums using bucket sort for O(n) time.
+func topKFrequent(nums []int, k int) []int {
+	if debugTopK {
+		fmt.Printf("input nums=%v k=%d\n", nums, k)
+	}
+
+	freq := make(map[int]int, len(nums))
+	for _, num := range nums {
+		freq[num]++
+	}
+
+	buckets := make([][]int, len(nums)+1)
+	for num, count := range freq {
+		buckets[count] = append(buckets[count], num)
+		if debugTopK {
+			fmt.Printf("num=%d count=%d\n", num, count)
+		}
+	}
+
+	result := make([]int, 0, k)
+	for count := len(nums); count >= 1 && len(result) < k; count-- {
+		for _, num := range buckets[count] {
+			result = append(result, num)
+			if debugTopK {
+				fmt.Printf("selected num=%d count=%d\n", num, count)
+			}
+			if len(result) == k {
+				break
+			}
+
+		}
+	}
+
+	return result
+}

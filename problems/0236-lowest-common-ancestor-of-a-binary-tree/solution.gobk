@@ -1,0 +1,41 @@
+package lowestcommonancestorofabinarytree
+
+import "fmt"
+
+// TreeNode represents a binary tree node.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+const debugLCAGeneral = false
+
+// lowestCommonAncestor returns the lowest node containing both p and q.
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	if root == nil || root == p || root == q {
+		return root
+	}
+
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+
+	if debugLCAGeneral {
+		fmt.Printf("visit=%d left=%v right=%v\n", root.Val, nodeVal(left), nodeVal(right))
+	}
+
+	if left != nil && right != nil {
+		return root
+	}
+	if left != nil {
+		return left
+	}
+	return right
+}
+
+func nodeVal(n *TreeNode) any {
+	if n == nil {
+		return nil
+	}
+	return n.Val
+}

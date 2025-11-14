@@ -1,0 +1,53 @@
+package addbinary
+
+import "fmt"
+
+const debugAddBinary = false
+
+// addBinary returns the sum of two binary strings as another binary string.
+func addBinary(a, b string) string {
+	i, j := len(a)-1, len(b)-1
+	carry := 0
+	result := make([]byte, 0, max(len(a), len(b))+1)
+
+	for i >= 0 || j >= 0 || carry > 0 {
+		sum := carry
+		if i >= 0 {
+			sum += int(a[i] - '0')
+			i--
+		}
+		if j >= 0 {
+			sum += int(b[j] - '0')
+			j--
+		}
+		result = append(result, byte(sum%2)+'0')
+		carry = sum / 2
+
+		if debugAddBinary {
+			fmt.Printf("partial sum=%d carry=%d result=%s\n", sum, carry, string(reverseCopy(result)))
+		}
+	}
+
+	reverseBytes(result)
+	return string(result)
+}
+
+func reverseBytes(bs []byte) {
+	for left, right := 0, len(bs)-1; left < right; left, right = left+1, right-1 {
+		bs[left], bs[right] = bs[right], bs[left]
+	}
+}
+
+func reverseCopy(bs []byte) []byte {
+	tmp := make([]byte, len(bs))
+	copy(tmp, bs)
+	reverseBytes(tmp)
+	return tmp
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}

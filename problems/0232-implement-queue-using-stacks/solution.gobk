@@ -1,0 +1,57 @@
+package implementqueueusingstacks
+
+import "fmt"
+
+const debugMyQueue = false
+
+// MyQueue implements a queue using two stacks.
+type MyQueue struct {
+	in  []int
+	out []int
+}
+
+func Constructor() MyQueue {
+	return MyQueue{}
+}
+
+// Push appends an element to the back of the queue.
+func (q *MyQueue) Push(x int) {
+	q.in = append(q.in, x)
+	if debugMyQueue {
+		fmt.Printf("push %d -> in=%v out=%v\n", x, q.in, q.out)
+	}
+}
+
+// Pop removes and returns the element at the front of the queue.
+func (q *MyQueue) Pop() int {
+	q.move()
+	val := q.out[len(q.out)-1]
+	q.out = q.out[:len(q.out)-1]
+	return val
+}
+
+// Peek returns the front element without removing it.
+func (q *MyQueue) Peek() int {
+	q.move()
+	return q.out[len(q.out)-1]
+}
+
+// Empty reports whether the queue has no elements.
+func (q *MyQueue) Empty() bool {
+	return len(q.in) == 0 && len(q.out) == 0
+}
+
+func (q *MyQueue) move() {
+	if len(q.out) > 0 {
+		return
+	}
+	for len(q.in) > 0 {
+		n := len(q.in)
+		node := q.in[n-1]
+		q.in = q.in[:n-1]
+		q.out = append(q.out, node)
+	}
+	if debugMyQueue {
+		fmt.Printf("move -> in=%v out=%v\n", q.in, q.out)
+	}
+}

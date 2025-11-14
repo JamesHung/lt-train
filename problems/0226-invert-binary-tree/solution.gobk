@@ -1,0 +1,51 @@
+package invertbinarytree
+
+import "fmt"
+
+const debugInvertTree = false
+
+// TreeNode defines a binary tree node.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+// invertTree swaps the left and right subtrees of every node.
+func invertTree(root *TreeNode) *TreeNode {
+	if debugInvertTree {
+		fmt.Printf("invert node=%v\n", dumpTree(root))
+	}
+
+	if root == nil {
+		return nil
+	}
+
+	root.Left, root.Right = invertTree(root.Right), invertTree(root.Left)
+
+	if debugInvertTree {
+		fmt.Printf("after invert node=%v\n", dumpTree(root))
+	}
+	return root
+}
+
+func dumpTree(root *TreeNode) []int {
+	if !debugInvertTree {
+		return nil
+	}
+	result := make([]int, 0)
+	queue := []*TreeNode{root}
+	for len(queue) > 0 {
+		node := queue[0]
+		queue = queue[1:]
+		if node == nil {
+			result = append(result, 0)
+			continue
+		}
+		result = append(result, node.Val)
+		if node.Left != nil || node.Right != nil {
+			queue = append(queue, node.Left, node.Right)
+		}
+	}
+	return result
+}

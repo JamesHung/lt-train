@@ -1,0 +1,46 @@
+package floodfill
+
+import "fmt"
+
+const debugFloodFill = false
+
+var directions = [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+
+// floodFill repaints all connected pixels that match the starting color.
+func floodFill(image [][]int, sr int, sc int, color int) [][]int {
+	original := image[sr][sc]
+	if original == color {
+		return image
+	}
+
+	m, n := len(image), len(image[0])
+	stack := [][2]int{{sr, sc}}
+
+	for len(stack) > 0 {
+		cell := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		r, c := cell[0], cell[1]
+
+		if image[r][c] != original {
+			continue
+		}
+
+		image[r][c] = color
+
+		if debugFloodFill {
+			fmt.Printf("paint (%d,%d)\n", r, c)
+		}
+
+		for _, d := range directions {
+			nr, nc := r+d[0], c+d[1]
+			if nr < 0 || nr >= m || nc < 0 || nc >= n {
+				continue
+			}
+			if image[nr][nc] == original {
+				stack = append(stack, [2]int{nr, nc})
+			}
+		}
+	}
+
+	return image
+}

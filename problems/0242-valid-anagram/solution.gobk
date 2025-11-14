@@ -1,0 +1,32 @@
+package validanagram
+
+import "fmt"
+
+const debugValidAnagram = false
+
+// isAnagram returns true if s and t contain the same multiset of letters.
+func isAnagram(s, t string) bool {
+	if debugValidAnagram {
+		fmt.Printf("isAnagram s=%q t=%q\n", s, t)
+	}
+
+	if len(s) != len(t) {
+		return false
+	}
+
+	var freq [26]int
+	for i := 0; i < len(s); i++ {
+		freq[s[i]-'a']++
+		freq[t[i]-'a']--
+		if debugValidAnagram {
+			fmt.Printf("idx=%d charS=%c charT=%c freq=%v\n", i, s[i], t[i], freq)
+		}
+	}
+
+	for _, count := range freq {
+		if count != 0 {
+			return false
+		}
+	}
+	return true
+}

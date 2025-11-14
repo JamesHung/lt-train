@@ -1,0 +1,34 @@
+package lowestcommonancestorofabinarysearchtree
+
+import "fmt"
+
+// TreeNode represents a BST node.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+const debugLCABST = false
+
+// lowestCommonAncestor walks the BST to find the split point for p and q.
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	curr := root
+	for curr != nil {
+		if debugLCABST {
+			fmt.Printf("visit=%d\n", curr.Val)
+		}
+
+		if p.Val < curr.Val && q.Val < curr.Val {
+			curr = curr.Left
+			continue
+		}
+		if p.Val > curr.Val && q.Val > curr.Val {
+			curr = curr.Right
+			continue
+		}
+		return curr
+	}
+
+	return nil
+}

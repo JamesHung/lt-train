@@ -1,0 +1,30 @@
+package ransomnote
+
+import "fmt"
+
+const debugRansomNote = false
+
+// canConstruct returns true if ransomNote can be built using letters from magazine.
+func canConstruct(ransomNote, magazine string) bool {
+	if len(ransomNote) > len(magazine) {
+		return false
+	}
+
+	counts := make([]int, 26)
+	for i := 0; i < len(magazine); i++ {
+		counts[magazine[i]-'a']++
+	}
+
+	for i := 0; i < len(ransomNote); i++ {
+		idx := ransomNote[i] - 'a'
+		counts[idx]--
+		if debugRansomNote {
+			fmt.Printf("char=%c remaining=%d\n", ransomNote[i], counts[idx])
+		}
+		if counts[idx] < 0 {
+			return false
+		}
+	}
+
+	return true
+}

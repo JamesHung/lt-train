@@ -1,0 +1,16 @@
+package twosum
+
+// twoSum returns the indices of the two numbers that add up to target.
+// It uses a single pass hash map to get O(n) time and O(n) space.
+func twoSum(nums []int, target int) []int {
+	seen := make(map[int]int, len(nums))
+
+	for i, val := range nums {
+		if j, ok := seen[target-val]; ok {
+			return []int{j, i}
+		}
+		seen[val] = i
+	}
+
+	return nil
+}
