@@ -49,3 +49,5 @@ Repository for collecting LeetCode problems, their Go solutions, and accompanyin
 - [0876 Middle of the Linked List](problems/0876-middle-of-the-linked-list)
 - [0704 Binary Search](problems/0704-binary-search)
 - [0733 Flood Fill](problems/0733-flood-fill)
+- [1765 Map of Highest Peak](problems/1765-map-of-highest-peak)
+- [0973 K Closest Points to Origin](problems/0973-k-closest-points-to-origin)

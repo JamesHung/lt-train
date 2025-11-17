@@ -2,44 +2,49 @@ package matrix01
 
 const debugUpdateMatrix = false
 
-var directions = [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+var directions = [][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 
 // updateMatrix returns for each cell the distance to the nearest zero via multi-source BFS.
 func updateMatrix(mat [][]int) [][]int {
-	m, n := len(mat), len(mat[0])
-	dist := make([][]int, m)
-	queue := make([][2]int, 0, m*n)
+	rowLen, colLen := len(mat), len(mat[0])
+	result := make([][]int, rowLen)
+	queue := make([][2]int, 0, rowLen*colLen)
 
-	const inf = int(^uint(0) >> 1)
+	const max_int = int(^uint(0) >> 1)
 
-	for i := 0; i < m; i++ {
-		dist[i] = make([]int, n)
-		for j := 0; j < n; j++ {
-			if mat[i][j] == 0 {
-				queue = append(queue, [2]int{i, j})
+	// Find all zero cells to use as BFS sources.
+	for row := 0; row < rowLen; row++ {
+		result[row] = make([]int, colLen)
+		for col := 0; col < colLen; col++ {
+			if mat[row][col] == 0 {
+				result[row][col] = 0
+				queue = append(queue, [2]int{row, col})
 			} else {
-				dist[i][j] = inf
+				result[row][col] = max_int
 			}
 		}
 	}
 
-	head := 0
-	for head < len(queue) {
-		cell := queue[head]
-		head++
-		r, c := cell[0], cell[1]
+	// BFS from all zero cells
+	for len(queue) > 0 {
+		node := queue[0]
+		queue = queue[1:]
+		nodeRow, nodeCol := node[0], node[1]
 
-		for _, d := range directions {
-			nr, nc := r+d[0], c+d[1]
-			if nr < 0 || nr >= m || nc < 0 || nc >= n {
+		for _, direction := range directions {
+			nearR, nearC := nodeRow+direction[0], nodeCol+direction[1]
+			if nearR < 0 || nearR >= rowLen || nearC < 0 || nearC >= colLen {
 				continue
 			}
-			if dist[nr][nc] > dist[r][c]+1 {
-				dist[nr][nc] = dist[r][c] + 1
-				queue = append(queue, [2]int{nr, nc})
+
+			if result[nearR][nearC] > result[nodeRow][nodeCol]+1 {
+				result[nearR][nearC] = result[nodeRow][nodeCol] + 1
+				queue = append(queue, [2]int{nearR, nearC})
 			}
 		}
+
 	}
 
-	return dist
+	return result
+
 }

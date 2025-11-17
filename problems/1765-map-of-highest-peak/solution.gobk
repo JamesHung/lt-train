@@ -1,0 +1,58 @@
+package mapofhighestpeak
+
+import "fmt"
+
+const debugHighestPeak = false
+
+var directions = [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+
+// highestPeak runs a multi-source BFS that expands heights from every water cell.
+func highestPeak(isWater [][]int) [][]int {
+	m, n := len(isWater), len(isWater[0])
+	height := make([][]int, m)
+	queue := make([][2]int, 0, m*n)
+
+	for r := 0; r < m; r++ {
+		height[r] = make([]int, n)
+		for c := 0; c < n; c++ {
+			if isWater[r][c] == 1 {
+				queue = append(queue, [2]int{r, c})
+				if debugHighestPeak {
+					fmt.Printf("water source at (%d,%d)\n", r, c)
+				}
+			} else {
+				height[r][c] = -1
+			}
+		}
+	}
+
+	head := 0
+	for head < len(queue) {
+		cell := queue[head]
+		head++
+		r, c := cell[0], cell[1]
+
+		for _, dir := range directions {
+			nr, nc := r+dir[0], c+dir[1]
+			if nr < 0 || nr >= m || nc < 0 || nc >= n {
+				continue
+			}
+			if height[nr][nc] != -1 {
+				continue
+			}
+			height[nr][nc] = height[r][c] + 1
+			queue = append(queue, [2]int{nr, nc})
+
+			if debugHighestPeak {
+				fmt.Printf("assign (%d,%d) -> %d from (%d,%d)\n", nr, nc, height[nr][nc], r, c)
+			}
+		}
+	}
+
+	if debugHighestPeak {
+		fmt.Printf("final height: %v\n", height)
+	}
+
+	return height
+}
+

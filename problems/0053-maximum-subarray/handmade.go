@@ -1,18 +1,24 @@
 package maximumsubarray
 
-const debugMaxSubArray = false
-
 // maxSubArray finds the contiguous range with the largest sum using Kadane's scan.
 func maxSubArray(nums []int) int {
-	best := nums[0]
-	current := nums[0]
+	if len(nums) == 0 {
+		return 0
+	}
 
+	// if len(nums) == 1 {
+	// 	return nums[0]
+	// }
+	current := nums[0]
+	best := current
 	for i := 1; i < len(nums); i++ {
-		if current < 0 {
-			current = nums[i]
+		n := nums[i]
+		if current+n < n {
+			current = n
 		} else {
-			current += nums[i]
+			current += n
 		}
+
 		if current > best {
 			best = current
 		}

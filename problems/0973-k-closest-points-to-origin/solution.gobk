@@ -1,0 +1,30 @@
+package kclosestpointstoorigin
+
+import (
+	"fmt"
+	"sort"
+)
+
+const debugKClosest = false
+
+// kClosest sorts points by squared distance to the origin.
+func kClosest(points [][]int, k int) [][]int {
+	sort.Slice(points, func(i, j int) bool {
+		di, dj := squaredDist(points[i]), squaredDist(points[j])
+		if debugKClosest && (i < 5 || j < 5) {
+			fmt.Printf("compare %v (dist=%d) vs %v (dist=%d)\n", points[i], di, points[j], dj)
+		}
+		return di < dj
+	})
+
+	if debugKClosest {
+		fmt.Printf("sorted points=%v, taking first %d\n", points, k)
+	}
+
+	return points[:k]
+}
+
+func squaredDist(p []int) int {
+	return p[0]*p[0] + p[1]*p[1]
+}
+

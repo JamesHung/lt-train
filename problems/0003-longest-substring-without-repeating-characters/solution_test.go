@@ -24,6 +24,11 @@ func TestLengthOfLongestSubstring(t *testing.T) {
 			want: 3,
 		},
 		{
+			name: "example4",
+			s:    "abba",
+			want: 2,
+		},
+		{
 			name: "empty",
 			s:    "",
 			want: 0,
