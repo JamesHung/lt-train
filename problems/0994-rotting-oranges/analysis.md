@@ -7,6 +7,11 @@ Treat all initially rotten oranges as sources in a BFS. Push them into a queue w
 ## 中文詳解
 把所有一開始的 2 當作多源 BFS 的起點，記錄 `minute=0` 推進 queue，同時計算 fresh 橙子數量。每次從 queue 取出一個腐爛橙子，往四個方向擴散，只要鄰居是 1 就改成 2，fresh--，並把它以 `minute+1` 推入 queue，表示下一分鐘才腐爛。BFS 結束時如果還有 fresh > 0 代表某些橙子無法腐爛，回傳 -1；否則回傳最後一次擴散的分鐘數（若原本沒有新鮮橙則直接 0）。
 
+
+
+• minute 記錄的是「這顆橘子變成腐爛時的時間戳」。所有一開始就爛的橘子在時間 0 ，所以進 queue 時 minute=0。當我們從 queue 拿出一顆在 minute = t 的橘子，它會在下一分鐘把鄰近的新鮮橘子感染；那些鄰居是「在 minute =
+  t+1 時才變爛」，因此推入 queue 時就帶著 minute = t + 1。一路傳遞下去，minutes 最後就會是最後一批橘子變爛的時間，代表整個過程花了多少分鐘。
+
 ## Complexity
 - Time: `O(mn)` since each cell enters the queue at most once.
 - Space: `O(mn)` for the queue in the worst case.
