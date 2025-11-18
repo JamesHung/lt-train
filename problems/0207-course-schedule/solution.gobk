@@ -1,0 +1,54 @@
+package courseschedule
+
+import "fmt"
+
+const debugCanFinish = false
+
+// canFinish determines if all courses can be finished via topological sorting.
+func canFinish(numCourses int, prerequisites [][]int) bool {
+	graph := make([][]int, numCourses)
+	indegree := make([]int, numCourses)
+	for _, edge := range prerequisites {
+		a, b := edge[0], edge[1]
+		graph[b] = append(graph[b], a)
+		indegree[a]++
+	}
+
+	queue := make([]int, 0, numCourses)
+	for course, deg := range indegree {
+		if deg == 0 {
+			queue = append(queue, course)
+		}
+	}
+
+	if debugCanFinish {
+		fmt.Printf("initial indegree=%v queue=%v\n", indegree, queue)
+	}
+
+	visited := 0
+	for head := 0; head < len(queue); head++ {
+		cur := queue[head]
+		visited++
+		if debugCanFinish {
+			fmt.Printf("take %d visited=%d\n", cur, visited)
+		}
+		for _, next := range graph[cur] {
+			indegree[next]--
+			if debugCanFinish {
+				fmt.Printf("  decrease indegree[%d]=%d\n", next, indegree[next])
+			}
+			if indegree[next] == 0 {
+				queue = append(queue, next)
+				if debugCanFinish {
+					fmt.Printf("  enqueue %d\n", next)
+				}
+			}
+		}
+	}
+
+	if debugCanFinish {
+		fmt.Printf("visited=%d numCourses=%d\n", visited, numCourses)
+	}
+	return visited == numCourses
+}
+

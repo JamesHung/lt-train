@@ -1,0 +1,60 @@
+package implementtrieprefixtree
+
+import "fmt"
+
+type Trie struct {
+	children map[rune]*Trie
+	end      bool
+}
+
+const debugTrie = false
+
+// Constructor initializes the trie.
+func Constructor() Trie {
+	return Trie{children: make(map[rune]*Trie)}
+}
+
+// Insert adds a word into the trie.
+func (t *Trie) Insert(word string) {
+	cur := t
+	for _, ch := range word {
+		if cur.children == nil {
+			cur.children = make(map[rune]*Trie)
+		}
+		if cur.children[ch] == nil {
+			cur.children[ch] = &Trie{children: make(map[rune]*Trie)}
+		}
+		cur = cur.children[ch]
+	}
+	cur.end = true
+
+	if debugTrie {
+		fmt.Printf("inserted %q\n", word)
+	}
+}
+
+// Search returns whether word exists in the trie.
+func (t *Trie) Search(word string) bool {
+	node := t.find(word)
+	return node != nil && node.end
+}
+
+// StartsWith returns whether any word in the trie has the prefix.
+func (t *Trie) StartsWith(prefix string) bool {
+	return t.find(prefix) != nil
+}
+
+func (t *Trie) find(s string) *Trie {
+	cur := t
+	for _, ch := range s {
+		if cur.children == nil {
+			return nil
+		}
+		cur = cur.children[ch]
+		if cur == nil {
+			return nil
+		}
+	}
+	return cur
+}
+

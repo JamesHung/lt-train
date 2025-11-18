@@ -1,0 +1,28 @@
+package coinchange
+
+import "fmt"
+
+const debugCoinChange = false
+
+// coinChange solves the minimum coin problem via bottom-up DP.
+func coinChange(coins []int, amount int) int {
+	const inf = int(^uint(0) >> 1)
+	dp := make([]int, amount+1)
+	for i := 1; i <= amount; i++ {
+		dp[i] = inf
+		for _, coin := range coins {
+			if coin <= i && dp[i-coin] != inf && dp[i-coin]+1 < dp[i] {
+				dp[i] = dp[i-coin] + 1
+			}
+		}
+		if debugCoinChange {
+			fmt.Printf("dp[%d]=%d\n", i, dp[i])
+		}
+	}
+
+	if dp[amount] == inf {
+		return -1
+	}
+	return dp[amount]
+}
+

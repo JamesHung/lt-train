@@ -1,0 +1,50 @@
+package binarytreelevelordertraversal
+
+import "fmt"
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+const debugLevelOrder = false
+
+// levelOrder returns a slice of levels filled with node values in BFS order.
+func levelOrder(root *TreeNode) [][]int {
+	if root == nil {
+		return nil
+	}
+
+	var result [][]int
+	queue := []*TreeNode{root}
+
+	for len(queue) > 0 {
+		levelSize := len(queue)
+		level := make([]int, 0, levelSize)
+
+		for i := 0; i < levelSize; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			level = append(level, node.Val)
+			if debugLevelOrder {
+				fmt.Printf("visit node=%d levelIndex=%d\n", node.Val, len(result))
+			}
+
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+			}
+		}
+
+		result = append(result, level)
+		if debugLevelOrder {
+			fmt.Printf("finish level %d -> %v\n", len(result)-1, level)
+		}
+	}
+
+	return result
+}
+

@@ -1,0 +1,52 @@
+package threesum
+
+import (
+	"fmt"
+	"sort"
+)
+
+const debugThreeSum = false
+
+// threeSum returns all unique triplets whose sum is zero.
+func threeSum(nums []int) [][]int {
+	sort.Ints(nums)
+	out := make([][]int, 0)
+
+	for i := 0; i < len(nums); i++ {
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+		target := -nums[i]
+		l, r := i+1, len(nums)-1
+
+		for l < r {
+			sum := nums[l] + nums[r]
+			if debugThreeSum {
+				fmt.Printf("i=%d l=%d r=%d vals=%d,%d,%d sum=%d target=%d\n",
+					i, l, r, nums[i], nums[l], nums[r], sum, target)
+			}
+			if sum == target {
+				out = append(out, []int{nums[i], nums[l], nums[r]})
+				l++
+				r--
+				for l < r && nums[l] == nums[l-1] {
+					l++
+				}
+				for l < r && nums[r] == nums[r+1] {
+					r--
+				}
+			} else if sum < target {
+				l++
+			} else {
+				r--
+			}
+		}
+	}
+
+	if debugThreeSum {
+		fmt.Printf("triplets=%v\n", out)
+	}
+
+	return out
+}
+

@@ -1,0 +1,37 @@
+package clonegraph
+
+import "fmt"
+
+type Node struct {
+	Val       int
+	Neighbors []*Node
+}
+
+const debugCloneGraph = false
+
+// cloneGraph returns a deep copy of the connected undirected graph using DFS with memoization.
+func cloneGraph(node *Node) *Node {
+	if node == nil {
+		return nil
+	}
+
+	cache := make(map[*Node]*Node, 16)
+	var dfs func(*Node) *Node
+	dfs = func(curr *Node) *Node {
+		if clone, ok := cache[curr]; ok {
+			return clone
+		}
+		if debugCloneGraph {
+			fmt.Printf("clone node %d\n", curr.Val)
+		}
+		newNode := &Node{Val: curr.Val, Neighbors: make([]*Node, 0, len(curr.Neighbors))}
+		cache[curr] = newNode
+		for _, nb := range curr.Neighbors {
+			newNode.Neighbors = append(newNode.Neighbors, dfs(nb))
+		}
+		return newNode
+	}
+
+	return dfs(node)
+}
+
