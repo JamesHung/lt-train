@@ -1,0 +1,32 @@
+package productoftwoexceptself
+
+import "fmt"
+
+const debugProductExceptSelf = false
+
+// productExceptSelf builds prefix products then multiplies by suffix products.
+func productExceptSelf(nums []int) []int {
+	n := len(nums)
+	out := make([]int, n)
+
+	prefix := 1
+	for i := 0; i < n; i++ {
+		out[i] = prefix
+		prefix *= nums[i]
+		if debugProductExceptSelf {
+			fmt.Printf("prefix[%d]=%d\n", i, out[i])
+		}
+	}
+
+	suffix := 1
+	for i := n - 1; i >= 0; i-- {
+		out[i] *= suffix
+		if debugProductExceptSelf {
+			fmt.Printf("suffix step idx=%d -> %d\n", i, out[i])
+		}
+		suffix *= nums[i]
+	}
+
+	return out
+}
+

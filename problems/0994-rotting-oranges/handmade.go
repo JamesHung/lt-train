@@ -1,0 +1,65 @@
+package rottingoranges
+
+import "fmt"
+
+const debugRottingOranges = false
+
+var dirs = [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+
+// orangesRotting performs multi-source BFS from the initial rotten oranges.
+func orangesRotting(grid [][]int) int {
+	rows := len(grid)
+	cols := len(grid[0])
+
+	type cell struct {
+		r      int
+		c      int
+		minute int
+	}
+
+	queue := []cell{}
+	fresh := 0
+
+	for r := 0; r < rows; r++ {
+		for c := 0; c < cols; c++ {
+			if grid[r][c] == 2 {
+				queue = append(queue, cell{r: r, c: c, minute: 0})
+			} else if grid[r][c] == 1 {
+				fresh++
+			}
+		}
+	}
+
+	if fresh == 0 {
+		return 0
+	}
+
+	minutes := 0
+	for len(queue) > 0 {
+		cur := queue[0]
+		queue = queue[1:]
+		minutes = cur.minute
+
+		for _, dir := range dirs {
+			nr := cur.r + dir[0]
+			nc := cur.c + dir[1]
+			if nr < 0 || nr >= rows || nc < 0 || nc >= cols {
+				continue
+			}
+			if grid[nr][nc] != 1 {
+				continue
+			}
+			grid[nr][nc] = 2
+			fresh--
+			if debugRottingOranges {
+				fmt.Printf("minute %d rot (%d,%d) -> fresh=%d\n", cur.minute+1, nr, nc, fresh)
+			}
+			queue = append(queue, cell{r: nr, c: nc, minute: cur.minute + 1})
+		}
+	}
+
+	if fresh > 0 {
+		return -1
+	}
+	return minutes
+}

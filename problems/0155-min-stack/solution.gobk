@@ -1,0 +1,56 @@
+package minstack
+
+const debugMinStack = false
+
+// MinStack stores values plus the running minimum so each operation stays O(1).
+type MinStack struct {
+	objs        []int
+	minimalObjs []int
+}
+
+// Constructor initializes an empty MinStack.
+func Constructor() MinStack {
+	return MinStack{}
+}
+
+// Push adds val and updates the current minimum tracker.
+func (s *MinStack) Push(val int) {
+	s.objs = append(s.objs, val)
+
+	if len(s.minimalObjs) == 0 {
+		s.minimalObjs = append(s.minimalObjs, val)
+		return
+	}
+
+	currentMin := s.minimalObjs[len(s.minimalObjs)-1]
+	if val < currentMin {
+		currentMin = val
+	}
+	s.minimalObjs = append(s.minimalObjs, currentMin)
+}
+
+// Pop removes the most recent element.
+func (s *MinStack) Pop() {
+	if len(s.objs) == 0 {
+		return
+	}
+	s.objs = s.objs[:len(s.objs)-1]
+	s.minimalObjs = s.minimalObjs[:len(s.minimalObjs)-1]
+}
+
+// Top returns the top element.
+func (s *MinStack) Top() int {
+	if len(s.objs) > 0 {
+		return s.objs[len(s.objs)-1]
+	}
+
+	return 0
+}
+
+// GetMin returns the minimum element in the stack.
+func (s *MinStack) GetMin() int {
+	if len(s.minimalObjs) == 0 {
+		return 0
+	}
+	return s.minimalObjs[len(s.minimalObjs)-1]
+}

@@ -1,0 +1,38 @@
+package validatebinarysearchtree
+
+import (
+	"fmt"
+	"math"
+)
+
+const debugValidateBST = false
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func isValidBST(root *TreeNode) bool {
+	return validate(root, math.MinInt64, math.MaxInt64)
+}
+
+func validate(node *TreeNode, low, high int64) bool {
+	if node == nil {
+		return true
+	}
+
+	val := int64(node.Val)
+	if val <= low || val >= high {
+		if debugValidateBST {
+			fmt.Printf("node %d violates (%d,%d)\n", node.Val, low, high)
+		}
+		return false
+	}
+
+	if debugValidateBST {
+		fmt.Printf("node %d ok in (%d,%d)\n", node.Val, low, high)
+	}
+
+	return validate(node.Left, low, val) && validate(node.Right, val, high)
+}
