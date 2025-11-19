@@ -1,50 +1,41 @@
 package matrix01
 
-const debugUpdateMatrix = false
-
 var directions = [][2]int{{-1, 0}, {1, 0}, {0, -1}, {0, 1}}
 
 // updateMatrix returns for each cell the distance to the nearest zero via multi-source BFS.
 func updateMatrix(mat [][]int) [][]int {
-	rowLen, colLen := len(mat), len(mat[0])
-	result := make([][]int, rowLen)
-	queue := make([][2]int, 0, rowLen*colLen)
+	rowCount, colCount := len(mat), len(mat)
+	result := make([][]int, rowCount*colCount)
+	queue := make([][2]int, 0, rowCount)
 
-	const max_int = int(^uint(0) >> 1)
+	for i := 0; i < rowCount; i++ {
+		for j := 0; j < colCount; j++ {
+			if mat[i][j] == 1 {
+				queue = append(queue, [2]int{i, j})
+			}
 
-	// Find all zero cells to use as BFS sources.
-	for row := 0; row < rowLen; row++ {
-		result[row] = make([]int, colLen)
-		for col := 0; col < colLen; col++ {
-			if mat[row][col] == 0 {
-				result[row][col] = 0
-				queue = append(queue, [2]int{row, col})
-			} else {
-				result[row][col] = max_int
+			if mat[i][j] == 0 {
+				mat[i][j] = -1
 			}
 		}
 	}
 
-	// BFS from all zero cells
 	for len(queue) > 0 {
-		node := queue[0]
+		current := queue[0]
+		c, r := current[0], current[1]
 		queue = queue[1:]
-		nodeRow, nodeCol := node[0], node[1]
-
-		for _, direction := range directions {
-			nearR, nearC := nodeRow+direction[0], nodeCol+direction[1]
-			if nearR < 0 || nearR >= rowLen || nearC < 0 || nearC >= colLen {
+		for _, dir := range directions {
+			nr, nc := current[0]+dir[0], current[1]+dir[1]
+			if nr < 0 || nr > rowCount || nc < 0 || nc > colCount {
 				continue
 			}
 
-			if result[nearR][nearC] > result[nodeRow][nodeCol]+1 {
-				result[nearR][nearC] = result[nodeRow][nodeCol] + 1
-				queue = append(queue, [2]int{nearR, nearC})
+			if mat[nr][nc] == 1 {
+				result[c][r]++
+				mat[nr][nc]
 			}
+
 		}
-
 	}
-
-	return result
 
 }
