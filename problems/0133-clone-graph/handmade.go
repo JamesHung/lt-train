@@ -55,10 +55,11 @@ func cloneByDFS(node *Node) *Node {
 		}
 		seen[node] = newNode
 
-		newNode.Neighbors = make([]*Node, 0, len(node.Neighbors))
-		for _, nb := range node.Neighbors {
-			newCopy := dfs(nb)
-			newNode.Neighbors = append(newNode.Neighbors, newCopy)
+		newNode.Neighbors = make([]*Node, len(node.Neighbors))
+		for i, nb := range node.Neighbors {
+			// newCopy := dfs(nb)
+			// newNode.Neighbors = append(newNode.Neighbors, newCopy)
+			newNode.Neighbors[i] = dfs(nb)
 		}
 
 		return newNode

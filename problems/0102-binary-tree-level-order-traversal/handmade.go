@@ -6,7 +6,7 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
-const useBFS = false
+const useBFS = true
 
 func levelOrder(root *TreeNode) [][]int {
 	if useBFS {
@@ -23,8 +23,6 @@ func bfsLevelOrder(root *TreeNode) [][]int {
 	}
 
 	result := make([][]int, 0)
-	// queue := make([]*TreeNode, 0, 1)
-	// queue = append(queue, root)
 	queue := []*TreeNode{root}
 
 	for len(queue) > 0 {
@@ -32,19 +30,17 @@ func bfsLevelOrder(root *TreeNode) [][]int {
 		levelVals := make([]int, 0, levelSize)
 
 		for i := 0; i < levelSize; i++ {
-			node := queue[0]
+			cur := queue[0]
 			queue = queue[1:]
-			levelVals = append(levelVals, node.Val)
-
-			if node.Left != nil {
-				queue = append(queue, node.Left)
+			levelVals = append(levelVals, cur.Val)
+			if cur.Left != nil {
+				queue = append(queue, cur.Left)
 			}
 
-			if node.Right != nil {
-				queue = append(queue, node.Right)
+			if cur.Right != nil {
+				queue = append(queue, cur.Right)
 			}
 		}
-
 		result = append(result, levelVals)
 	}
 
@@ -57,10 +53,9 @@ func dfsLevelOrder(root *TreeNode) [][]int {
 	}
 
 	result := make([][]int, 0)
-
-	var dfs func(root *TreeNode, level int)
-	dfs = func(root *TreeNode, level int) {
-		if root == nil {
+	var dfs func(node *TreeNode, level int)
+	dfs = func(node *TreeNode, level int) {
+		if node == nil {
 			return
 		}
 
@@ -68,12 +63,11 @@ func dfsLevelOrder(root *TreeNode) [][]int {
 			result = append(result, []int{})
 		}
 
-		result[level] = append(result[level], root.Val)
-		dfs(root.Left, level+1)
-		dfs(root.Right, level+1)
+		result[level] = append(result[level], node.Val)
+		dfs(node.Left, level+1)
+		dfs(node.Right, level+1)
 	}
 
 	dfs(root, 0)
-
 	return result
 }

@@ -10,9 +10,14 @@ func coinChange(coins []int, amount int) int {
 	for i := 1; i <= amount; i++ {
 		dp[i] = maxInt
 		for _, coin := range coins {
+
+			if i < coin {
+				continue
+			}
 			//  5 = 7-2
 			delta := i - coin
-			if i >= coin && dp[delta] != maxInt && dp[delta]+1 < dp[i] {
+			// 這裡的+1 是指一個該coin 加上原本dp[delta]
+			if dp[delta] != maxInt && dp[delta]+1 < dp[i] {
 				dp[i] = dp[delta] + 1
 			}
 		}

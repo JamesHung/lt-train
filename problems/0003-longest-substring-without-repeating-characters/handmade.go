@@ -1,34 +1,55 @@
 package lengthoflongestsubstring
 
-import "fmt"
-
 const debugLogs = true
 
-// lengthOfLongestSubstring returns the longest substring length without repeating characters.
-// Uses sliding window with last seen positions to keep O(n) time.
-func lengthOfLongestSubstring(s string) int {
-	length, longestStr := longestSubstringWindow(s)
-	fmt.Printf("longestStr: %s\n", longestStr)
-	return length
-}
+// // lengthOfLongestSubstring returns the longest substring length without repeating characters.
+// // Uses sliding window with last seen positions to keep O(n) time.
+// func lengthOfLongestSubstring(s string) int {
+// 	length, longestStr := longestSubstringWindow(s)
+// 	fmt.Printf("longestStr: %s\n", longestStr)
+// 	return length
+// }
 
-// longestSubstringWindow also returns the actual substring achieving the best length.
-func longestSubstringWindow(s string) (int, string) {
+// // longestSubstringWindow also returns the actual substring achieving the best length.
+// func longestSubstringWindow(s string) (int, string) {
+// 	runes := []rune(s)
+// 	seen := make(map[rune]int, len(runes))
+// 	start, best, bestStart := 0, 0, 0
+
+// 	for i, r := range runes {
+// 		if prev, ok := seen[r]; ok && prev >= start {
+// 			start = prev + 1
+// 		}
+
+// 		seen[r] = i
+// 		if current := i - start + 1; current > best {
+// 			best = current
+// 			bestStart = start
+// 		}
+// 	}
+
+// 	return best, string(runes[bestStart : bestStart+best])
+// }
+
+func lengthOfLongestSubstring(s string) int {
 	runes := []rune(s)
-	seen := make(map[rune]int, len(runes))
-	start, best, bestStart := 0, 0, 0
+
+	start := 0
+	best := 0
+
+	prevCharIndex := make(map[rune]int, len(runes))
 
 	for i, r := range runes {
-		if prev, ok := seen[r]; ok && prev >= start {
+		if prev, ok := prevCharIndex[r]; ok {
 			start = prev + 1
 		}
 
-		seen[r] = i
+		prevCharIndex[r] = i
 		if current := i - start + 1; current > best {
 			best = current
-			bestStart = start
 		}
+
 	}
 
-	return best, string(runes[bestStart : bestStart+best])
+	return best
 }

@@ -13,3 +13,17 @@ func twoSum(nums []int, target int) []int {
 
 	return nil
 }
+
+// func twoSum(nums []int, target int) []int {
+// 	check := make(map[int]int)
+
+// 	for i, n := range nums {
+// 		delta := target - n
+// 		if ni, ok := check[n]; ok {
+// 			return []int{ni, i}
+// 		}
+// 		check[delta] = i
+// 	}
+
+// 	return nil
+// }

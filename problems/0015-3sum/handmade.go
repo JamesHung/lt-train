@@ -7,32 +7,36 @@ const debugThreeSum = false
 // threeSum returns all unique triplets whose sum is zero.
 func threeSum(nums []int) [][]int {
 	sort.Ints(nums)
-	result := make([][]int, 0)
 
-	for i := 0; i < len(nums); i++ {
+	result := make([][]int, 0, len(nums))
+
+	for i, n := range nums {
 		if i > 0 && nums[i] == nums[i-1] {
 			continue
 		}
-		target := -nums[i]
-		l, r := i+1, len(nums)-1
+		target := -n
+		left, right := i+1, len(nums)-1
 
-		for l < r {
-			sum := nums[l] + nums[r]
-			if sum == target {
-				result = append(result, []int{nums[i], nums[l], nums[r]})
-				l++
-				r--
-				for l < r && nums[l] == nums[l-1] {
-					l++
+		for left < right {
+			test := nums[left] + nums[right]
+			if test == target {
+				val := []int{n, nums[left], nums[right]}
+				result = append(result, val)
+				left++
+				right--
+				for left < right && nums[left] == nums[left-1] {
+					left++
 				}
-				for l < r && nums[r] == nums[r+1] {
-					r--
+
+				for left < right && nums[right] == nums[right+1] {
+					right--
 				}
-			} else if sum < target {
-				l++
-			} else {
-				r--
+			} else if test < target {
+				left++
+			} else if test > target {
+				right--
 			}
+
 		}
 	}
 

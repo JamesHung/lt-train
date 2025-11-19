@@ -34,7 +34,6 @@ func (t *Trie) Insert(word string) {
 	}
 
 	current.isEnd = true
-
 }
 
 func (t *Trie) Search(word string) bool {
