@@ -1,42 +1,48 @@
 package timebasedkeyvaluestore
 
-import (
-	"sort"
-)
+import "sort"
 
-type ValueData struct {
+type ValueObject struct {
 	value string
 	ts    int
 }
 
-// TimeMap stores versions of values per key; left unimplemented for practice.
 type TimeMap struct {
-	data map[string][]ValueData
+	data map[string][]ValueObject
 }
 
 func Constructor() TimeMap {
 	return TimeMap{
-		data: make(map[string][]ValueData),
+		data: make(map[string][]ValueObject),
 	}
 }
 
 func (tm *TimeMap) Set(key string, value string, timestamp int) {
-	tm.data[key] = append(tm.data[key], ValueData{value: value, ts: timestamp})
+	tm.data[key] = append(tm.data[key],
+		ValueObject{value: value,
+			ts: timestamp})
 }
 
 func (tm *TimeMap) Get(key string, timestamp int) string {
-	values, ok := tm.data[key]
+	value, ok := tm.data[key]
 	if !ok {
 		return ""
 	}
 
-	idx := sort.Search(len(values), func(i int) bool {
-		return values[i].ts > timestamp
+	index := sort.Search(len(value), func(i int) bool {
+		return value[i].ts > timestamp
 	})
 
-	if idx == 0 {
+	if index == 0 {
 		return ""
 	}
 
-	return ValueData[idx-1].val
+	return value[index-1].value
 }
+
+/**
+ * Your TimeMap object will be instantiated and called as such:
+ * obj := Constructor();
+ * obj.Set(key,value,timestamp);
+ * param_2 := obj.Get(key,timestamp);
+ */

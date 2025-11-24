@@ -27,3 +27,36 @@ func search(nums []int, target int) int {
 
 	return -1
 }
+
+// func search(nums []int, target int) int {
+
+// 	var binarySearch func(low int, high int) int
+// 	binarySearch = func(low int, high int) int {
+// 		if low > high {
+// 			return -1
+// 		}
+
+// 		mid := low + (high-low)/2
+
+// 		switch {
+// 		case nums[mid] == target:
+// 			return mid
+// 		case nums[low] <= nums[mid]:
+// 			if nums[low] <= target && target < nums[mid] {
+// 				high = mid - 1
+// 			} else {
+// 				low = mid + 1
+// 			}
+// 		default:
+// 			if nums[mid] < target && target <= nums[high] {
+// 				low = mid + 1
+// 			} else {
+// 				high = mid - 1
+// 			}
+// 		}
+
+// 		return binarySearch(low, high)
+// 	}
+
+// 	return binarySearch(0, len(nums)-1)
+// }
