@@ -21,6 +21,8 @@ Repository for collecting LeetCode problems, their Go solutions, and accompanyin
 - [0005 Longest Palindromic Substring](problems/0005-longest-palindromic-substring)
 - [0006 Zigzag Conversion](problems/0006-zigzag-conversion)
 - [0015 3Sum](problems/0015-3sum)
+- [0033 Search in Rotated Sorted Array](problems/0033-search-in-rotated-sorted-array)
+- [0039 Combination Sum](problems/0039-combination-sum)
 - [0102 Binary Tree Level Order Traversal](problems/0102-binary-tree-level-order-traversal)
 - [0133 Clone Graph](problems/0133-clone-graph)
 - [0150 Evaluate Reverse Polish Notation](problems/0150-evaluate-reverse-polish-notation)

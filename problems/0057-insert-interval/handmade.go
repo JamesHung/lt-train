@@ -1,31 +1,32 @@
 package insertinterval
 
-const debugInsertInterval = false
-
 // insert places newInterval into intervals and merges overlaps to keep ordering.
 func insert(intervals [][]int, newInterval []int) [][]int {
-	result := make([][]int, 0, len(intervals)+1)
-	merged := []int{newInterval[0], newInterval[1]}
-	mergedPlaced := false
+	result := make([][]int, 0, len(intervals))
+	newStart, newEnd := newInterval[0], newInterval[1]
 
-	for _, interval := range intervals {
-		switch {
-		case interval[1] < merged[0]:
-			result = append(result, interval)
-		case interval[0] > merged[1]:
-			if !mergedPlaced {
-				result = append(result, merged)
-				mergedPlaced = true
-			}
-			result = append(result, interval)
-		default:
-			merged[0] = min(interval[0], merged[0])
-			merged[1] = max(interval[1], merged[1])
-		}
+	i := 0
+	for i < len(intervals) && intervals[i][1] < newStart {
+		result = append(result, intervals[i])
+		i++
 	}
 
-	if !mergedPlaced {
-		result = append(result, merged)
+	for i < len(intervals) && intervals[i][0] <= newEnd {
+		if intervals[i][0] < newStart {
+			newStart = intervals[i][0]
+		}
+
+		if intervals[i][1] > newEnd {
+			newEnd = intervals[i][1]
+		}
+		i++
+	}
+
+	result = append(result, []int{newStart, newEnd})
+
+	for i < len(intervals) {
+		result = append(result, intervals[i])
+		i++
 	}
 
 	return result

@@ -6,17 +6,14 @@ func maxSubArray(nums []int) int {
 		return 0
 	}
 
-	// if len(nums) == 1 {
-	// 	return nums[0]
-	// }
-	current := nums[0]
-	best := current
+	best := nums[0]
+	current := best
 	for i := 1; i < len(nums); i++ {
-		n := nums[i]
-		if current+n < n {
-			current = n
+		next := nums[i]
+		if current+next < next {
+			current = next
 		} else {
-			current += n
+			current += next
 		}
 
 		if current > best {

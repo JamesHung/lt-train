@@ -40,7 +40,7 @@ func lengthOfLongestSubstring(s string) int {
 	prevCharIndex := make(map[rune]int, len(runes))
 
 	for i, r := range runes {
-		if prev, ok := prevCharIndex[r]; ok {
+		if prev, ok := prevCharIndex[r]; ok && prev >= start {
 			start = prev + 1
 		}
 

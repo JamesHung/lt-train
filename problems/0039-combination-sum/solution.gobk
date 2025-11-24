@@ -1,0 +1,43 @@
+package combinationsum
+
+import (
+	"fmt"
+	"sort"
+)
+
+const debugCombinationSum = false
+
+// combinationSum returns all unique combinations that sum to target; numbers may be reused.
+func combinationSum(candidates []int, target int) [][]int {
+	sort.Ints(candidates)
+
+	result := [][]int{}
+	path := []int{}
+
+	var dfs func(start, rem int)
+	dfs = func(start, rem int) {
+		if rem == 0 {
+			comb := make([]int, len(path))
+			copy(comb, path)
+			result = append(result, comb)
+			return
+		}
+
+		for i := start; i < len(candidates); i++ {
+			val := candidates[i]
+			if val > rem {
+				break
+			}
+
+			path = append(path, val)
+			if debugCombinationSum {
+				fmt.Printf("choose %d -> path %v, rem %d\n", val, path, rem-val)
+			}
+			dfs(i, rem-val)
+			path = path[:len(path)-1]
+		}
+	}
+
+	dfs(0, target)
+	return result
+}
