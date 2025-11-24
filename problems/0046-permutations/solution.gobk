@@ -1,0 +1,43 @@
+package permutations
+
+import "fmt"
+
+const debugPermuteGobk = false
+
+// permute generates all permutations via backtracking with a used marker.
+func permute(nums []int) [][]int {
+	n := len(nums)
+	used := make([]bool, n)
+	path := make([]int, 0, n)
+	ans := [][]int{}
+
+	var backtrack func()
+	backtrack = func() {
+		if len(path) == n {
+			out := make([]int, n)
+			copy(out, path)
+			ans = append(ans, out)
+			return
+		}
+
+		for i, v := range nums {
+			if used[i] {
+				continue
+			}
+			used[i] = true
+			path = append(path, v)
+			if debugPermuteGobk {
+				fmt.Printf("choose %d -> path %v\n", v, path)
+			}
+			backtrack()
+			path = path[:len(path)-1]
+			used[i] = false
+			if debugPermuteGobk {
+				fmt.Printf("backtrack from %d -> path %v\n", v, path)
+			}
+		}
+	}
+
+	backtrack()
+	return ans
+}

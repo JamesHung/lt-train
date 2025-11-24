@@ -1,0 +1,57 @@
+package mergeintervals
+
+import (
+	"fmt"
+	"sort"
+)
+
+const debugMergeIntervals = false
+
+// merge consolidates overlapping or touching intervals into a non-overlapping list.
+func merge(intervals [][]int) [][]int {
+	if len(intervals) == 0 {
+		return nil
+	}
+
+	sort.Slice(intervals, func(i, j int) bool {
+		if intervals[i][0] == intervals[j][0] {
+			return intervals[i][1] < intervals[j][1]
+		}
+		return intervals[i][0] < intervals[j][0]
+	})
+
+	merged := make([][]int, 0, len(intervals))
+	curStart, curEnd := intervals[0][0], intervals[0][1]
+
+	if debugMergeIntervals {
+		fmt.Printf("sorted=%v\n", intervals)
+	}
+
+	for _, iv := range intervals[1:] {
+		start, end := iv[0], iv[1]
+		if start <= curEnd { // overlaps or touches current interval
+			if end > curEnd {
+				curEnd = end
+			}
+			if debugMergeIntervals {
+				fmt.Printf("merge with %v -> [%d,%d]\n", iv, curStart, curEnd)
+			}
+			continue
+		}
+
+		merged = append(merged, []int{curStart, curEnd})
+		curStart, curEnd = start, end
+
+		if debugMergeIntervals {
+			fmt.Printf("push %v; reset to [%d,%d]\n", merged[len(merged)-1], curStart, curEnd)
+		}
+	}
+
+	merged = append(merged, []int{curStart, curEnd})
+
+	if debugMergeIntervals {
+		fmt.Printf("result=%v\n", merged)
+	}
+
+	return merged
+}

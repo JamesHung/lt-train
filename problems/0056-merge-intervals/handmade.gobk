@@ -1,0 +1,6 @@
+package mergeintervals
+
+// merge should combine overlapping intervals; implementation intentionally left blank for practice.
+func merge(intervals [][]int) [][]int {
+	return nil
+}

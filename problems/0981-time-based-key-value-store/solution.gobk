@@ -1,0 +1,54 @@
+package timebasedkeyvaluestore
+
+import (
+	"fmt"
+	"sort"
+)
+
+const debugTimeMap = false
+
+type entry struct {
+	ts  int
+	val string
+}
+
+// TimeMap stores time-versioned values per key.
+type TimeMap struct {
+	data map[string][]entry
+}
+
+// Constructor initializes the structure.
+func Constructor() TimeMap {
+	return TimeMap{data: make(map[string][]entry)}
+}
+
+// Set stores the value for key at timestamp (timestamps per key are increasing).
+func (tm *TimeMap) Set(key string, value string, timestamp int) {
+	tm.data[key] = append(tm.data[key], entry{ts: timestamp, val: value})
+	if debugTimeMap {
+		fmt.Printf("set key=%s ts=%d val=%s\n", key, timestamp, value)
+	}
+}
+
+// Get returns the value with the largest timestamp <= query, or empty if none.
+func (tm *TimeMap) Get(key string, timestamp int) string {
+	entries, ok := tm.data[key]
+	if !ok {
+		return ""
+	}
+
+	idx := sort.Search(len(entries), func(i int) bool {
+		return entries[i].ts > timestamp
+	})
+	if idx == 0 {
+		if debugTimeMap {
+			fmt.Printf("get key=%s ts=%d -> miss (before first)\n", key, timestamp)
+		}
+		return ""
+	}
+	val := entries[idx-1].val
+	if debugTimeMap {
+		fmt.Printf("get key=%s ts=%d -> ts=%d val=%s\n", key, timestamp, entries[idx-1].ts, val)
+	}
+	return val
+}
