@@ -1,0 +1,30 @@
+package sortcolors
+
+import "fmt"
+
+const debugSortColors = false
+
+// sortColors runs Dutch National Flag: 0s to the left, 2s to the right, 1s in the middle.
+func sortColors(nums []int) {
+    low, mid, high := 0, 0, len(nums)-1
+
+    for mid <= high {
+        switch nums[mid] {
+        case 0:
+            nums[low], nums[mid] = nums[mid], nums[low]
+            if debugSortColors {
+                fmt.Printf("move 0 low=%d mid=%d -> %v\n", low, mid, nums)
+            }
+            low++
+            mid++
+        case 1:
+            mid++
+        case 2:
+            nums[mid], nums[high] = nums[high], nums[mid]
+            if debugSortColors {
+                fmt.Printf("move 2 mid=%d high=%d -> %v\n", mid, high, nums)
+            }
+            high--
+        }
+    }
+}

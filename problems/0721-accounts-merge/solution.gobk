@@ -1,0 +1,89 @@
+package accountsmerge
+
+import (
+	"fmt"
+	"sort"
+)
+
+const debugAccountsMerge = false
+
+type uf struct {
+	parent map[string]string
+	rank   map[string]int
+}
+
+func newUF() *uf {
+	return &uf{
+		parent: make(map[string]string),
+		rank:   make(map[string]int),
+	}
+}
+
+func (u *uf) find(x string) string {
+	p, ok := u.parent[x]
+	if !ok {
+		u.parent[x] = x
+		u.rank[x] = 0
+		return x
+	}
+	if p != x {
+		u.parent[x] = u.find(p)
+	}
+	return u.parent[x]
+}
+
+func (u *uf) union(a, b string) {
+	ra := u.find(a)
+	rb := u.find(b)
+	if ra == rb {
+		return
+	}
+	if u.rank[ra] < u.rank[rb] {
+		ra, rb = rb, ra
+	}
+	u.parent[rb] = ra
+	if u.rank[ra] == u.rank[rb] {
+		u.rank[ra]++
+	}
+	if debugAccountsMerge {
+		fmt.Printf("union(%s,%s) -> root=%s\n", a, b, u.parent[rb])
+	}
+}
+
+// accountsMerge unions emails that appear in the same account and then groups by root.
+func accountsMerge(accounts [][]string) [][]string {
+	uf := newUF()
+	emailToName := make(map[string]string)
+
+	for _, acc := range accounts {
+		if len(acc) < 2 {
+			continue
+		}
+		name := acc[0]
+		firstEmail := acc[1]
+		emailToName[firstEmail] = name
+		uf.find(firstEmail)
+		for i := 2; i < len(acc); i++ {
+			email := acc[i]
+			emailToName[email] = name
+			uf.union(firstEmail, email)
+		}
+	}
+
+	groups := make(map[string][]string)
+	for email := range emailToName {
+		root := uf.find(email)
+		groups[root] = append(groups[root], email)
+	}
+
+	result := make([][]string, 0, len(groups))
+	for root, emails := range groups {
+		sort.Strings(emails)
+		name := emailToName[root]
+		if debugAccountsMerge {
+			fmt.Printf("component root=%s name=%s emails=%v\n", root, name, emails)
+		}
+		result = append(result, append([]string{name}, emails...))
+	}
+	return result
+}
