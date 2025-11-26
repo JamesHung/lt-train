@@ -1,0 +1,33 @@
+package partitionequalsubsetsum
+
+import "fmt"
+
+const debugPartitionEqualSubsetSum = false
+
+// canPartition returns true if nums can be split into two subsets with equal sum.
+func canPartition(nums []int) bool {
+    total := 0
+    for _, v := range nums {
+        total += v
+    }
+    if total%2 == 1 {
+        return false
+    }
+    target := total / 2
+
+    dp := make([]bool, target+1)
+    dp[0] = true
+
+    for _, num := range nums {
+        for s := target; s >= num; s-- {
+            if dp[s-num] {
+                dp[s] = true
+            }
+        }
+        if debugPartitionEqualSubsetSum {
+            fmt.Printf("after num=%d dp=%v\n", num, dp)
+        }
+    }
+
+    return dp[target]
+}

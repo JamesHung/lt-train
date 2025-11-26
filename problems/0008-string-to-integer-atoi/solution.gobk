@@ -1,0 +1,64 @@
+package stringtointegeratoi
+
+import "fmt"
+
+const debugMyAtoi = false
+
+// myAtoi converts a string to a 32-bit signed integer following the described rules.
+func myAtoi(s string) int {
+	const (
+		maxInt32 = 1<<31 - 1
+		minInt32 = -1 << 31
+	)
+
+	i, n := 0, len(s)
+
+	// Skip leading spaces.
+	for i < n && s[i] == ' ' {
+		i++
+	}
+	if i == n {
+		return 0
+	}
+
+	// Read optional sign.
+	sign := 1
+	if s[i] == '+' {
+		i++
+	} else if s[i] == '-' {
+		sign = -1
+		i++
+	}
+
+	val := 0
+	for i < n {
+		ch := s[i]
+		if ch < '0' || ch > '9' {
+			break
+		}
+		digit := int(ch - '0')
+
+		// Check overflow before multiplying.
+		if sign == 1 {
+			if val > (maxInt32-digit)/10 {
+				return maxInt32
+			}
+		} else {
+			// For negative, allow absolute value up to 2147483648.
+			if val > (maxInt32+1-digit)/10 {
+				return minInt32
+			}
+		}
+
+		val = val*10 + digit
+		if debugMyAtoi {
+			fmt.Printf("i=%d digit=%d val=%d sign=%d\n", i, digit, val, sign)
+		}
+		i++
+	}
+
+	if sign == 1 {
+		return val
+	}
+	return -val
+}

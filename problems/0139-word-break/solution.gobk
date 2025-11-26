@@ -1,0 +1,45 @@
+package wordbreak
+
+import "fmt"
+
+const debugWordBreak = false
+
+// wordBreak returns true if s can be segmented into dictionary words using DP.
+func wordBreak(s string, wordDict []string) bool {
+    n := len(s)
+    dict := make(map[string]struct{}, len(wordDict))
+    maxLen := 0
+    for _, w := range wordDict {
+        dict[w] = struct{}{}
+        if len(w) > maxLen {
+            maxLen = len(w)
+        }
+    }
+
+    dp := make([]bool, n+1)
+    dp[0] = true
+
+    for i := 0; i < n; i++ {
+        if !dp[i] {
+            continue
+        }
+        limit := i + maxLen
+        if limit > n {
+            limit = n
+        }
+        for j := i + 1; j <= limit; j++ {
+            if _, ok := dict[s[i:j]]; ok {
+                dp[j] = true
+                if debugWordBreak {
+                    fmt.Printf("found word %q at [%d,%d) dp[%d]=true\n", s[i:j], i, j, j)
+                }
+            }
+        }
+    }
+
+    if debugWordBreak {
+        fmt.Printf("dp: %v\n", dp)
+    }
+
+    return dp[n]
+}
