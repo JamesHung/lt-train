@@ -40,6 +40,7 @@ Repository for collecting LeetCode problems, their Go solutions, and accompanyin
 - [0053 Maximum Subarray](problems/0053-maximum-subarray)
 - [0056 Merge Intervals](problems/0056-merge-intervals)
 - [0057 Insert Interval](problems/0057-insert-interval)
+- [0054 Spiral Matrix](problems/0054-spiral-matrix)
 - [0067 Add Binary](problems/0067-add-binary)
 - [0070 Climbing Stairs](problems/0070-climbing-stairs)
 - [0075 Sort Colors](problems/0075-sort-colors)
