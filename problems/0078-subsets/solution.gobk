@@ -1,0 +1,26 @@
+package subsets
+
+import "fmt"
+
+const debugSubsets = false
+
+// subsets returns all possible subsets (the power set) of nums.
+func subsets(nums []int) [][]int {
+	n := len(nums)
+	total := 1 << n
+	res := make([][]int, 0, total)
+
+	for mask := 0; mask < total; mask++ {
+		subset := make([]int, 0, n) // ensure non-nil empty slice for mask=0
+		for i := 0; i < n; i++ {
+			if mask&(1<<i) != 0 {
+				subset = append(subset, nums[i])
+			}
+		}
+		res = append(res, subset)
+		if debugSubsets {
+			fmt.Printf("mask=%b subset=%v\n", mask, subset)
+		}
+	}
+	return res
+}

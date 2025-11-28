@@ -1,0 +1,22 @@
+package subsets
+
+const debugSubsets = false
+
+// subsets returns all possible subsets (the power set) of nums.
+func subsets(nums []int) [][]int {
+	len := len(nums)
+	total := 1 << len
+	result := make([][]int, 0, total)
+
+	for mask := 0; mask < total; mask++ {
+		temp := make([]int, 0, len)
+		for i := 0; i < len; i++ {
+			if mask&(1<<i) != 0 {
+				temp = append(temp, nums[i])
+			}
+		}
+		result = append(result, temp)
+	}
+
+	return result
+}
