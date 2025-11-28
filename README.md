@@ -30,6 +30,7 @@ Repository for collecting LeetCode problems, their Go solutions, and accompanyin
 - [0139 Word Break](problems/0139-word-break)
 - [0150 Evaluate Reverse Polish Notation](problems/0150-evaluate-reverse-polish-notation)
 - [0155 Min Stack](problems/0155-min-stack)
+- [0199 Binary Tree Right Side View](problems/0199-binary-tree-right-side-view)
 - [0207 Course Schedule](problems/0207-course-schedule)
 - [0200 Number of Islands](problems/0200-number-of-islands)
 - [0208 Implement Trie (Prefix Tree)](problems/0208-implement-trie-prefix-tree)

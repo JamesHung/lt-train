@@ -22,3 +22,6 @@ Each element can be either in or out of a subset — a binary choice. With `n` i
   - 101 (5)：第 0、2 位是 1，取 1,3 → [1,3]
   - 110 (6)：第 1、2 位是 1，取 2,3 → [2,3]
   - 111 (7)：三位都是 1，取 1,2,3 → [1,2,3]
+
+
+  mask&(1<<i) != 0 這句是在問：「mask 的第 i 個 bit 是否為 1？」
