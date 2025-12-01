@@ -5,20 +5,19 @@ func findLongestPalindromicString(s string) string {
 		return s
 	}
 
-	bestLeft := 0
-	bestRight := 0
+	bestLeft, bestRight := 0, 0
 	for center := 0; center < len(s); center++ {
-		oddStringLeft, oddStringRight := longestPalindromicString(s, center, center)
-		evenStringLeft, eventStringRight := longestPalindromicString(s, center, center+1)
+		oddLeft, oddRight := longestPalindromicString(s, center, center)
+		evenLeft, evenRight := longestPalindromicString(s, center, center+1)
 
-		if oddStringRight-oddStringLeft > bestRight-bestLeft {
-			bestLeft = oddStringLeft
-			bestRight = oddStringRight
+		if oddRight-oddLeft > bestRight-bestLeft {
+			bestLeft = oddLeft
+			bestRight = oddRight
 		}
 
-		if eventStringRight-evenStringLeft > bestRight-bestLeft {
-			bestLeft = evenStringLeft
-			bestRight = eventStringRight
+		if evenRight-evenLeft > bestRight-bestLeft {
+			bestLeft = evenLeft
+			bestRight = evenRight
 		}
 	}
 
@@ -32,4 +31,5 @@ func longestPalindromicString(s string, left int, right int) (int, int) {
 	}
 
 	return left + 1, right - 1
+
 }
