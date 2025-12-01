@@ -19,7 +19,7 @@ func TestTrie(t *testing.T) {
 		t.Fatalf("expected app to be found after insertion")
 	}
 
-	if !trie.Search("appxxx") {
-		t.Fatalf("expected app to be found after insertion")
+	if trie.Search("appxxx") {
+		t.Fatalf("expected appxxx to be absent")
 	}
 }

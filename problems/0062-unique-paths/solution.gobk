@@ -1,0 +1,24 @@
+package uniquepaths
+
+import "fmt"
+
+const debugUniquePaths = false
+
+// uniquePaths counts routes on an m by n grid using 1D DP.
+func uniquePaths(m int, n int) int {
+	row := make([]int, n)
+	for c := range row {
+		row[c] = 1 // first row has exactly one way
+	}
+
+	for r := 1; r < m; r++ {
+		for c := 1; c < n; c++ {
+			row[c] += row[c-1]
+		}
+		if debugUniquePaths {
+			fmt.Printf("after row %d: %v\n", r, row)
+		}
+	}
+
+	return row[n-1]
+}

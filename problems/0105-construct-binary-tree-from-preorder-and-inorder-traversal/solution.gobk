@@ -1,0 +1,48 @@
+package constructbinarytreefrompreorderandinordertraversal
+
+import "fmt"
+
+// TreeNode represents a binary tree node.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+const debugBuildTree = false
+
+// buildTree reconstructs the tree from preorder and inorder traversals.
+// Uses preorder pointer + inorder index map for O(n) time and O(n) extra space.
+func buildTree(preorder []int, inorder []int) *TreeNode {
+	if len(preorder) == 0 {
+		return nil
+	}
+
+	index := make(map[int]int, len(inorder))
+	for i, v := range inorder {
+		index[v] = i
+	}
+
+	preIdx := 0
+	var dfs func(l, r int) *TreeNode
+	dfs = func(l, r int) *TreeNode {
+		if l > r {
+			return nil
+		}
+
+		val := preorder[preIdx]
+		preIdx++
+		node := &TreeNode{Val: val}
+
+		if debugBuildTree {
+			fmt.Printf("build node %d within inorder[%d:%d]\n", val, l, r)
+		}
+
+		mid := index[val]
+		node.Left = dfs(l, mid-1)
+		node.Right = dfs(mid+1, r)
+		return node
+	}
+
+	return dfs(0, len(inorder)-1)
+}

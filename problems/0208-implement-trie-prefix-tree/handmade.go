@@ -7,7 +7,7 @@ type Trie struct {
 	children map[rune]*Trie
 }
 
-const debugTrie = true
+const debugTrie = false
 
 func Constructor() Trie {
 	return Trie{children: make(map[rune]*Trie)}
