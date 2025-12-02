@@ -9,6 +9,9 @@ Preorder visits `root, left, right`. The first element of the current preorder s
 This consumes each node once. A `debugBuildTree` flag can log the range per node.
 
 ## 中文詳解
+preorder (root → left → right)
+inorder (left → root → right)
+
 1. Preorder 的第一個元素一定是目前子樹的根。根在 inorder 中的位置 `mid` 左邊就是左子樹，右邊是右子樹。
 2. 先把 inorder 建成「值 → 位置」的 map，可 O(1) 找到 `mid`。
 3. 用全域指標 `preIdx` 依序取 preorder[preIdx] 當根，`preIdx++` 後遞迴建左子樹（區間 `[l, mid-1]`），再建右子樹（`[mid+1, r]`）。

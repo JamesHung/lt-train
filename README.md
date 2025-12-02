@@ -21,6 +21,8 @@ Repository for collecting LeetCode problems, their Go solutions, and accompanyin
 - [0005 Longest Palindromic Substring](problems/0005-longest-palindromic-substring)
 - [0006 Zigzag Conversion](problems/0006-zigzag-conversion)
 - [0008 String to Integer (atoi)](problems/0008-string-to-integer-atoi)
+- [0011 Container With Most Water](problems/0011-container-with-most-water)
+- [0017 Letter Combinations of a Phone Number](problems/0017-letter-combinations-of-a-phone-number)
 - [0015 3Sum](problems/0015-3sum)
 - [0033 Search in Rotated Sorted Array](problems/0033-search-in-rotated-sorted-array)
 - [0039 Combination Sum](problems/0039-combination-sum)

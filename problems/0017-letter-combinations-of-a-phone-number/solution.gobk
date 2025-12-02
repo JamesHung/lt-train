@@ -1,0 +1,46 @@
+package lettercombinationsofaphonenumber
+
+import "fmt"
+
+const debugLetterCombos = false
+
+var digitMap = map[byte]string{
+	'2': "abc",
+	'3': "def",
+	'4': "ghi",
+	'5': "jkl",
+	'6': "mno",
+	'7': "pqrs",
+	'8': "tuv",
+	'9': "wxyz",
+}
+
+// letterCombinations returns all letter strings for the given digit string.
+func letterCombinations(digits string) []string {
+	if len(digits) == 0 {
+		return nil
+	}
+
+	res := make([]string, 0)
+	path := make([]byte, len(digits))
+
+	var dfs func(int)
+	dfs = func(pos int) {
+		if pos == len(digits) {
+			res = append(res, string(path))
+			if debugLetterCombos {
+				fmt.Printf("combo: %s\n", res[len(res)-1])
+			}
+			return
+		}
+
+		letters := digitMap[digits[pos]]
+		for i := 0; i < len(letters); i++ {
+			path[pos] = letters[i]
+			dfs(pos + 1)
+		}
+	}
+
+	dfs(0)
+	return res
+}
