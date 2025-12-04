@@ -10,6 +10,7 @@ Use this repo to keep small Go experiments under `examples/` and to track the st
 - Functions: multiple return values (including `(T, error)`), named returns and why naked returns are avoided, variadic functions and spreading slices.
 - Control flow & error handling: if, for, switch (including type switch); idiomatic error handling with `%w`; panic vs error vs `log.Fatal`.
 - Interfaces: implicit implementation, small behavior-focused designs, compile-time assertions, interface value holding a nil concrete value.
+- Nil interface check: an interface is `nil` only when both type and value are nil. Factories should return `nil` (type=nil, data=nil) on invalid input; avoid returning a nil pointer wrapped in an interface. See `examples/nil_value_check/main.go` for factory vs bad factory, wrapped-nil detection, and a repository pattern that returns `(*T, error)` instead of an interface.
 - Methods & receivers: value vs pointer receiver, mutation vs copy cost, method sets and receiver choice.
 
 ## 2. Memory model: slices, maps, escape analysis
