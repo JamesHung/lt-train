@@ -6,61 +6,65 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 )
-
-type FileResponse struct {
-	Name string `json:"file_name"`
-	Len  int    `json:"length"`
-}
 
 const (
-	upload_dir    = "uploads"
-	max_file_size = 10 * 1024 * 1024
+	UploadFolder  = "uploads"
+	FileSizeLimit = 10 * 1024 * 1024 // 10MB
 )
 
-func main() {
-	if err := os.MkdirAll(upload_dir, 0o755); err != nil {
-		fmt.Println("Failed to create dir")
-	}
-
-	http.Handle("/upload", uploadHandler())
-
-	http.ListenAndServe(":8080", nil)
-
+type FileuploadResponse struct {
+	Name string `json:"file_name"`
+	Size int64  `json:"file_size"`
 }
-func uploadHandler() http.HandlerFunc {
+
+func main() {
+
+	os.MkdirAll(UploadFolder, 0o640)
+
+	http.Handle("/upload", uploadFileHandle())
+	http.ListenAndServe(":8080", nil)
+}
+
+func uploadFileHandle() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		reader := http.MaxBytesReader(w, r.Body, max_file_size)
+		if r.Method != http.MethodPost {
+			http.Error(w, "bad method", http.StatusBadRequest)
+			return
+		}
+
+		reader := http.MaxBytesReader(w, r.Body, FileSizeLimit)
 		body, err := io.ReadAll(reader)
 		if err != nil {
-			fmt.Println("failed to read body")
-			http.Error(w, "failed to create temp file", http.StatusBadRequest)
-			return
+			fmt.Println("Failed to read file: ", err)
+			http.Error(w, "failed to read files", http.StatusBadRequest)
 		}
 
-		temp, err := os.CreateTemp(upload_dir, "uploads")
+		tmp, err := os.CreateTemp(UploadFolder, "upload-*")
 		if err != nil {
-			fmt.Println("failed to create temp file")
-			http.Error(w, "failed to create temp file", http.StatusInternalServerError)
-			return
-		}
-		if _, err := temp.Write(body); err != nil {
-			fmt.Println("failed to write files")
-			http.Error(w, "failed to write files", http.StatusInternalServerError)
+			fmt.Println("Failed to create file")
+			http.Error(w, "failed to create file", http.StatusInternalServerError)
 			return
 		}
 
-		response := &FileResponse{
-			Name: filepath.Base(temp.Name()),
-			Len:  len(body),
+		fileSize, err := tmp.Write(body)
+		if err != nil {
+			fmt.Println("Failed to write file")
+			http.Error(w, "failed to create file", http.StatusInternalServerError)
+			return
 		}
 
-		w.WriteHeader(200)
+		response := &FileuploadResponse{
+			Name: tmp.Name(),
+			Size: int64(fileSize),
+		}
+
+		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(response); err != nil {
-			fmt.Println("Failed to write response")
+			fmt.Printf("Failed to write response")
 			return
 		}
+
 	}
 }

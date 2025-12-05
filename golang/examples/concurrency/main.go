@@ -22,22 +22,6 @@ func demoGoroutinesAndWaitGroup() {
 	wg.Wait()
 }
 
-func demoWaitForFiveWorkers() {
-	fmt.Println("== wait for 5 workers ==")
-
-	var wg sync.WaitGroup
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		go func(id int) {
-			defer wg.Done()
-			time.Sleep(200 * time.Millisecond)
-			fmt.Printf("worker %d finished\n", id)
-		}(i)
-	}
-	wg.Wait()
-	fmt.Println("done")
-}
-
 func demoUnbufferedChannel() {
 	fmt.Println("== unbuffered channel (sync handoff) ==")
 
@@ -98,11 +82,23 @@ func demoSelectMultiplex() {
 	ch2 := make(chan int) // unbuffered; send will block unless chosen
 	ch1 <- 42
 
-	select {
-	case v := <-ch1:
-		fmt.Println("got from ch1:", v)
-	case ch2 <- 10:
-		fmt.Println("sent to ch2")
+	for {
+		select {
+		case v := <-ch1:
+			fmt.Println("got from ch1:", v)
+			go func() {
+				ch2 <- 10
+			}()
+			// case ch2 <- 10:
+			fmt.Println("sent to ch2")
+		case v, _ := <-ch2:
+			fmt.Println("got from ch2:", v)
+			return
+		default:
+			fmt.Println("meet default")
+			time.Sleep(time.Millisecond * 10)
+
+		}
 	}
 }
 
@@ -130,7 +126,7 @@ func demoSelectTimeout() {
 	select {
 	case msg := <-result:
 		fmt.Println("select received:", msg)
-	case <-time.After(50 * time.Millisecond):
+	case <-time.After(30 * time.Millisecond):
 		fmt.Println("select timed out")
 	}
 }
@@ -175,6 +171,8 @@ func demoContextCancel() {
 			}
 		}
 	}()
+
+	ctx.Done()
 
 	time.Sleep(35 * time.Millisecond)
 	cancel()
@@ -252,52 +250,88 @@ func demoProducerConsumerWithTimeout() {
 	fmt.Println("== producer/consumer with timeout ==")
 
 	ch := make(chan int, 5)
-	timeout := 150 * time.Millisecond
+	defer close(ch)
+	timeOut := 150 * time.Millisecond
 
 	var wg sync.WaitGroup
 	wg.Add(2)
-
-	// producer
 	go func() {
+
 		defer wg.Done()
-		defer close(ch)
-		for i := 0; i < 10; i++ {
+		for i := 0; i < 5; i++ {
 			ch <- i
-			time.Sleep(30 * time.Millisecond)
 		}
 	}()
 
-	// consumer with timeout
 	go func() {
-		defer wg.Done()
-		timer := time.NewTimer(timeout)
+		timer := time.NewTimer(timeOut)
 		defer timer.Stop()
+		defer wg.Done()
 
 		for {
 			select {
-			case v, ok := <-ch:
-				if !ok {
-					fmt.Println("channel closed, consumer exited")
-					return
-				}
-				fmt.Println("consumed:", v)
+			case v := <-ch:
+				fmt.Println("received: ", v)
 				if !timer.Stop() {
 					<-timer.C
 				}
-				timer.Reset(timeout)
+				timer.Reset(timeOut)
 			case <-timer.C:
-				fmt.Println("no more data (consumer timeout)")
+				fmt.Printf("Timeouted")
 				return
 			}
 		}
+
 	}()
 
 	wg.Wait()
+
+	// ch := make(chan int, 5)
+	// timeout := 150 * time.Millisecond
+
+	// var wg sync.WaitGroup
+	// wg.Add(2)
+
+	// // producer
+	// go func() {
+	// 	defer wg.Done()
+	// 	defer close(ch)
+	// 	for i := 0; i < 10; i++ {
+	// 		ch <- i
+	// 		time.Sleep(30 * time.Millisecond)
+	// 	}
+	// }()
+
+	// // consumer with timeout
+	// go func() {
+	// 	defer wg.Done()
+	// 	timer := time.NewTimer(timeout)
+	// 	defer timer.Stop()
+
+	// 	for {
+	// 		select {
+	// 		case v, ok := <-ch:
+	// 			if !ok {
+	// 				fmt.Println("channel closed, consumer exited")
+	// 				return
+	// 			}
+	// 			fmt.Println("consumed:", v)
+	// 			if !timer.Stop() {
+	// 				<-timer.C
+	// 			}
+	// 			timer.Reset(timeout)
+	// 		case <-timer.C:
+	// 			fmt.Println("no more data (consumer timeout)")
+	// 			return
+	// 		}
+	// 	}
+	// }()
+
+	// wg.Wait()
 }
 
 func main() {
 	demoGoroutinesAndWaitGroup()
-	demoWaitForFiveWorkers()
 	demoUnbufferedChannel()
 	demoBufferedChannel()
 	demoChannelClose()
